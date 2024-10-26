@@ -95,7 +95,7 @@ class QuizApp:
         self.root.quit()
 
 if __name__ == "__main__":
-    filename = 'generated_questions1.csv'
+    filename = 'generated_questions2.csv'
     questions = load_questions(filename)
 
     root = tk.Tk()
