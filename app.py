@@ -9,7 +9,7 @@ def load_questions(filename):
     with open(filename, mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            if all(row[col].strip() for col in row):  # Check if all columns are non-empty
+            if row['question'] and row['option1'] and row['option2'] and row['option3'] and row['option4']:
                 questions.append(row)
     return questions
 
@@ -95,7 +95,7 @@ class QuizApp:
         self.root.quit()
 
 if __name__ == "__main__":
-    filename = 'generated_questions2.csv'
+    filename = 'generated_question_folder/generated_questions2.csv'
     questions = load_questions(filename)
 
     root = tk.Tk()

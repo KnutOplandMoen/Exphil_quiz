@@ -117,4 +117,16 @@ for i in range(10, 200):
     parse_and_fill_dataframe(output_text)
 
 # Save the dataframe to a CSV file
-df.to_csv(f'generated_questions1.csv', index=False)
+file_name = 'generated_questions1.csv'
+output_directory = 'generated_question_folder'
+if not os.path.exists(output_directory):
+    os.makedirs(output_directory)
+
+# Check if the file already exists in the output directory
+if os.path.exists(os.path.join(output_directory, file_name)):
+    print(f"The file {file_name} already exists in the directory {output_directory}. Please choose a different file name.")
+    file_name = input("Enter a new file name (with .csv extension): ")
+# Check if the directory exists, if not, create it
+
+# Save the dataframe to a CSV file in the specified directory
+df.to_csv(os.path.join(output_directory, file_name), index=False)
