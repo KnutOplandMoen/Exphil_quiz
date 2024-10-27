@@ -3,7 +3,6 @@ import openai
 import os
 from pypdf import PdfReader
 
-print(openai.__version__)
 # Define the columns of the dataframe
 columns = ['question', 'option1', 'reason1', 'option2', 'reason2', 'option3', 'reason3', 'option4', 'reason4']
 
@@ -28,11 +27,10 @@ def generate_questions_from_text(page_text):
     Alternativ 4: alternativet # Grunnen til feilaktighet: grunnen til feilaktighet\n
     """
     
-    api_key_path = os.path.join(os.path.dirname(__file__), "APIkey.txt")
-    with open(api_key_path, "r") as file:
-        Api_key = file.read().strip()
+    API_key = open("APIkey.txt", "r")
+    Api_key = API_key.read()
 
-    client = openai.OpenAI(api_key=Api_key)
+    client = openai(api_key=Api_key)
         
     response = client.chat.completions.create(
                 messages=[
@@ -95,27 +93,30 @@ def parse_and_fill_dataframe(output_text):
         pass
 
 
-print("Starting the process of generating questions from the...")
+print("Starting the process of generating questions from the Tenk...")
+for i in range(10, 200):
+    print(f"processing Tenk-{i}.pdf")
+    # Directory containing the split PDF files
+    pdf_directory = 'ilovepdf_split'
+    # creating a pdf reader object
+    reader = PdfReader(os.path.join(pdf_directory, f'Tenk-{i}.pdf'))
 
-# Directory containing the split PDF files
-pdf_directory = os.path.dirname(os.path.abspath(__file__))
-# creating a pdf reader object
-reader = PdfReader(os.path.join(pdf_directory, 'studiesporsmal.pdf'))
+    # printing number of pages in pdf file
 
-# creating a page object
-page = reader.pages[0]
+    # creating a page object
+    page = reader.pages[0]
 
-# extracting text from page
-#print(page.extract_text())
+    # extracting text from page
+    #print(page.extract_text())
 
-# Loop through each PDF file in the directory
-output_text = generate_questions_from_text(page.extract_text())
-            
-# Parse and fill the dataframe with the generated questions
-parse_and_fill_dataframe(output_text)
+    # Loop through each PDF file in the directory
+    output_text = generate_questions_from_text(page.extract_text())
+                
+    # Parse and fill the dataframe with the generated questions
+    parse_and_fill_dataframe(output_text)
 
 # Save the dataframe to a CSV file
-file_name = 'generated_questions4.csv'
+file_name = 'generated_questions1.csv'
 output_directory = 'generated_question_folder'
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
