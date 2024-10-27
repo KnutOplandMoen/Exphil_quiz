@@ -12,7 +12,7 @@ df = pd.DataFrame(columns=columns)
 
 def generate_questions_from_text(page_text):
     prompt = f"""
-    Du skal generere et flervalgsspørsmål basert på følgende utdrag fra boken:
+    Du skal generere et flervalgsspørsmål basert på følgende spørsmål:
     {page_text}
     
     Vennligst generer et flervalgsspørsmål med fire svaralternativer. For hvert alternativ, der alternativ 1 alltid skal være rett gi en forklaring på hvorfor svaret er korrekt eller feil. Formatér svaret som følger:
@@ -28,7 +28,8 @@ def generate_questions_from_text(page_text):
     Alternativ 4: alternativet # Grunnen til feilaktighet: grunnen til feilaktighet\n
     """
     
-    api_key_path = os.path.join(os.path.dirname(__file__), "APIkey.txt")
+    api_key_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "APIkey.txt")
+    
     with open(api_key_path, "r") as file:
         Api_key = file.read().strip()
 
@@ -97,22 +98,43 @@ def parse_and_fill_dataframe(output_text):
 
 print("Starting the process of generating questions from the...")
 
-# Directory containing the split PDF files
-pdf_directory = os.path.dirname(os.path.abspath(__file__))
-# creating a pdf reader object
-reader = PdfReader(os.path.join(pdf_directory, 'studiesporsmal.pdf'))
+# Specify the path to the PDF file in the same folder as the script
+pdf_path = os.path.join(os.path.dirname(__file__), 'studiesporsmal.pdf')
 
-# creating a page object
-page = reader.pages[0]
+# Create a PdfReader object
+reader = PdfReader(pdf_path)
+
+# Get the number of pages in the PDF
+num_pages = len(reader.pages)
+
+# Read the content of the first page
+first_page = reader.pages[0]
+text = first_page.extract_text()
+
+# Loop through all pages in the PDF
+for i in range(num_pages):
+    page = reader.pages[i]
+    text = page.extract_text()
+    
+    # Split the text by double newline
+    sections = text.split('\n\n')
+    
+    # Loop through each section
+    for section in sections[:]:  # Skip the first section
+        # Split the section into lines
+        lines = section.split('\n')
+        
+        # Loop through each line
+        for line in lines[1:]:
+            # Check if the line starts with a number
+            if line.strip() and line.strip()[0].isdigit():
+                # Remove leading digits
+                line = line.lstrip('0123456789. ')
+                output_text = generate_questions_from_text(line)
+                parse_and_fill_dataframe(output_text)
 
 # extracting text from page
 #print(page.extract_text())
-
-# Loop through each PDF file in the directory
-output_text = generate_questions_from_text(page.extract_text())
-            
-# Parse and fill the dataframe with the generated questions
-parse_and_fill_dataframe(output_text)
 
 # Save the dataframe to a CSV file
 file_name = 'generated_questions4.csv'

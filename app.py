@@ -2,16 +2,30 @@ import csv
 import random
 import tkinter as tk
 from tkinter import messagebox, scrolledtext
+import os
 
 # Load questions from CSV file
 def load_questions(filename):
     questions = []
+    print("f", filename)
     with open(filename, mode='r', encoding='utf-8') as file:
-        reader = csv.DictReader(file)
+        reader = csv.DictReader(file, delimiter=',')
         for row in reader:
+            print(row)
             if row['question'] and row['option1'] and row['option2'] and row['option3'] and row['option4']:
                 questions.append(row)
     return questions
+
+def load_all_questions(data_folder):
+    all_questions = []
+    print("Current working directory:", os.getcwd())
+    data_folder = os.path.join(os.getcwd(), data_folder)
+    for filename in os.listdir(data_folder):
+        if filename.endswith('.csv'):
+            filepath = os.path.join(data_folder, filename)
+            all_questions.extend(load_questions(filepath))
+    return all_questions
+
 
 # Main Quiz Application class
 class QuizApp:
@@ -95,9 +109,12 @@ class QuizApp:
         self.root.quit()
 
 if __name__ == "__main__":
-    filename = 'generated_question_folder/generated_questions2.csv'
-    questions = load_questions(filename)
+        data_folder = 'generated_question_folder'
+        questions = load_all_questions(data_folder)
 
-    root = tk.Tk()
-    app = QuizApp(root, questions)
-    root.mainloop()
+        root = tk.Tk()
+        app = QuizApp(root, questions)
+        root.mainloop()
+    
+
+    
