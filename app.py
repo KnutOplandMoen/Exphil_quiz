@@ -8,11 +8,9 @@ import sys
 # Load questions from CSV file
 def load_questions(filename):
     questions = []
-    print("f", filename)
     with open(filename, mode='r', encoding='utf-8') as file:
         reader = csv.DictReader(file, delimiter=',')
         for row in reader:
-            print(row)
             if row['question'] and row['option1'] and row['option2'] and row['option3'] and row['option4']:
                 questions.append(row)
     return questions
