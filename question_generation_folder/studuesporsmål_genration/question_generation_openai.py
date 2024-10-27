@@ -2,8 +2,8 @@ import pandas as pd
 import openai
 import os
 from pypdf import PdfReader
+current_directory = os.path.dirname(os.path.abspath(__file__))
 
-print(openai.__version__)
 # Define the columns of the dataframe
 columns = ['question', 'option1', 'reason1', 'option2', 'reason2', 'option3', 'reason3', 'option4', 'reason4']
 
@@ -28,9 +28,9 @@ def generate_questions_from_text(page_text):
     Alternativ 4: alternativet # Grunnen til feilaktighet: grunnen til feilaktighet\n
     """
     
-    api_key_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "APIkey.txt")
+    openai_key_path = os.path.join(current_directory, "APIkey.txt")
     
-    with open(api_key_path, "r") as file:
+    with open(openai_key_path, "r") as file:
         Api_key = file.read().strip()
 
     client = openai.OpenAI(api_key=Api_key)
@@ -65,7 +65,6 @@ df = pd.DataFrame(columns=columns)
 
 # Function to parse and fill the dataframe
 def parse_and_fill_dataframe(output_text):
-
     try:
         options = []
         reasons = []
@@ -96,13 +95,12 @@ def parse_and_fill_dataframe(output_text):
         pass
 
 
-print("Starting the process of generating questions from the...")
-
 # Specify the path to the PDF file in the same folder as the script
-pdf_path = os.path.join(os.path.dirname(__file__), 'studiesporsmal.pdf')
-
 # Create a PdfReader object
+pdf_name = 'studocu3.pdf'
+pdf_path = os.path.join(current_directory, pdf_name)
 reader = PdfReader(pdf_path)
+print(f"Starting the process of generating questions from the pdf: {pdf_name}")
 
 # Get the number of pages in the PDF
 num_pages = len(reader.pages)
@@ -112,32 +110,32 @@ first_page = reader.pages[0]
 text = first_page.extract_text()
 
 # Loop through all pages in the PDF
-for i in range(num_pages):
+for i in range(3, 18):
     page = reader.pages[i]
     text = page.extract_text()
-    
+    print(f"Processing page {i + 1}...")
     # Split the text by double newline
-    sections = text.split('\n\n')
-    
+    sections = text.split('\n')
     # Loop through each section
-    for section in sections[:]:  # Skip the first section
-        # Split the section into lines
-        lines = section.split('\n')
-        
-        # Loop through each line
-        for line in lines[1:]:
-            # Check if the line starts with a number
-            if line.strip() and line.strip()[0].isdigit():
-                # Remove leading digits
-                line = line.lstrip('0123456789. ')
+    print(len(sections))
+    for line in sections[:]:
+        # Check if the line starts with a number:
+        # Remove leading digits
+
+        print(line)
+        line = line.split(".")
+        if line[0].isdigit() or line[0] == '.':
+            try:
+                line = line[1].lstrip('0123456789. ')
                 output_text = generate_questions_from_text(line)
                 parse_and_fill_dataframe(output_text)
-
+            except:
+                pass
 # extracting text from page
 #print(page.extract_text())
 
 # Save the dataframe to a CSV file
-file_name = 'generated_questions4.csv'
+file_name = 'studocu4.csv'
 output_directory = 'generated_question_folder'
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
