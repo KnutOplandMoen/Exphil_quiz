@@ -1,7 +1,7 @@
 # Exphil_quiz
-## Folder Structure
+## Mappestruktur
 
-The `Exphil_quiz` folder is organized as follows:
+`Exphil_quiz` er organisert som følger:
 
 ```
 Exphil_quiz/
@@ -16,21 +16,21 @@ Exphil_quiz/
 └── README.md
 ```
 
-- **app.py**: The main application file that contains the logic for running the Exphil Quiz.
-- **generated_question_folder/**: A folder containing CSV files with quiz questions. Each CSV file should have columns for the question, options, and reasons.
-- **question_generation_folder/**: This folder contains scripts for generating quiz questions. Each script implements a different method for question generation.
+- **app.py**: Hovedapplikasjonsfilen som inneholder logikken for å kjøre Exphil Quiz.
+- **generated_question_folder/**: En mappe som inneholder CSV-filer med quizspørsmål. Hver CSV-fil skal ha kolonner for spørsmålet, alternativer og begrunnelser.
+- **question_generation_folder/**: Denne mappen inneholder skript for å generere quizspørsmål. Hvert skript implementerer en annen metode for spørsmålsgenerering.
 
-## Running the Application
+## Kjøre applikasjonen
 
-To run the Exphil Quiz application, execute the `app.py` file. This will start the quiz interface where you can select the number of questions and whether you want immediate feedback on your answers.
+For å kjøre Exphil Quiz-applikasjonen, kjør `app.py`-filen. Dette vil starte quizgrensesnittet hvor du kan velge antall spørsmål og om du vil ha umiddelbar tilbakemelding på svarene dine.
 
 ```bash
 python app.py
 ```
 
-## Required Libraries
+## Nødvendige biblioteker
 
-The following libraries are required to run the application:
+Følgende biblioteker er nødvendige for å kjøre applikasjonen:
 
 ```python
 import csv
@@ -41,7 +41,7 @@ import os
 import sys
 ```
 
-Make sure to install these libraries using pip:
+Sørg for å installere disse bibliotekene ved hjelp av pip:
 
 ```bash
 pip install csv random tkinter os sys
